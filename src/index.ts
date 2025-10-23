@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 
-import { videos } from './videos';
+import { videos } from './videos.js';
 
 const app = express();
 const port = process.env.PORT || 5001;
