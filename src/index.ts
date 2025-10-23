@@ -1,7 +1,5 @@
 import express, { Request, Response } from 'express';
 
-import { videos } from './videos.js';
-
 const app = express();
 const port = process.env.PORT || 5001;
 
@@ -11,6 +9,8 @@ app.use(parserMiddleware);
 const availableResolutionsEnum = [
     "P144", "P240", "P360", "P480", "P720", "P1080", "P1440", "P2160"
 ];
+
+let videos: any[] = []
 
 app.get('/hometask_01/api/videos', (req: Request, res: Response) => {
     res.status(200).send(videos);
