@@ -1,8 +1,10 @@
 import express, { Request, Response } from 'express';
-import 'dotenv/config';
+
 import { videos } from './videos';
 
 const app = express();
+const port = process.env.PORT || 5001;
+
 const parserMiddleware = express.json();
 app.use(parserMiddleware);
 
@@ -138,6 +140,6 @@ app.delete('/hometask_01/api/videos/:id', (req: Request, res: Response) => {
 
 
 
-app.listen(process.env.PORT || 3000, () => {
-    console.log(`Example app listening on port ${process.env.PORT}`);
-});
+app.listen(port, () => {
+    console.log(`Listening on port ${port}`)
+})
