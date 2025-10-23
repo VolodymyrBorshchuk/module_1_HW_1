@@ -12,15 +12,11 @@ const availableResolutionsEnum = [
     "P144", "P240", "P360", "P480", "P720", "P1080", "P1440", "P2160"
 ];
 
-app.get("/", (req: Request, res: Response) => {
-    res.send("Hello World!");
-});
-
-app.get('/api/videos', (req: Request, res: Response) => {
+app.get('/hometask_01/api/videos', (req: Request, res: Response) => {
     res.status(200).send(videos);
 });
 
-app.post('/api/videos', (req: Request, res: Response) => {
+app.post('/hometask_01/api/videos', (req: Request, res: Response) => {
     const { title, author, availableResolutions } = req.body;
     const errors: { message: string; field: string }[] = [];
 
@@ -56,12 +52,12 @@ app.post('/api/videos', (req: Request, res: Response) => {
     res.status(201).send(newVideo);
 });
 
-app.delete('/api/testing/all-data', (req, res) => {
+app.delete('/hometask_01/api/testing/all-data', (req, res) => {
     videos.length = 0; // очищає масив відео
     res.sendStatus(204); // повертає статус 204 No Content
 });
 
-app.get('/api/videos/:id', (req: Request, res: Response) => {
+app.get('/hometask_01/api/videos/:id', (req: Request, res: Response) => {
     const id = Number(req.params.id)
     const video = videos.find(v => Number(v.id) === id)
 
@@ -72,7 +68,7 @@ app.get('/api/videos/:id', (req: Request, res: Response) => {
     return res.status(200).send(video)
 })
 
-app.put('/api/videos/:id', (req: Request, res: Response) => {
+app.put('/hometask_01/api/videos/:id', (req: Request, res: Response) => {
     const id = Number(req.params.id)
     const video = videos.find(v => v.id === id)
 
@@ -125,7 +121,7 @@ app.put('/api/videos/:id', (req: Request, res: Response) => {
     return res.sendStatus(204)
 })
 
-app.delete('/api/videos/:id', (req: Request, res: Response) => {
+app.delete('/hometask_01/api/videos/:id', (req: Request, res: Response) => {
     const id = Number(req.params.id)
     const videoIndex = videos.findIndex(v => v.id === id)
 
