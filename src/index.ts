@@ -72,7 +72,7 @@ app.get('/api/videos/:id', (req: Request, res: Response) => {
     return res.status(200).send(video)
 })
 
-app.put('/hometask_01/api/videos/:id', (req: Request, res: Response) => {
+app.put('/api/videos/:id', (req: Request, res: Response) => {
     const id = Number(req.params.id)
     const video = videos.find(v => v.id === id)
 
@@ -125,7 +125,7 @@ app.put('/hometask_01/api/videos/:id', (req: Request, res: Response) => {
     return res.sendStatus(204)
 })
 
-app.delete('/hometask_01/api/videos/:id', (req: Request, res: Response) => {
+app.delete('/api/videos/:id', (req: Request, res: Response) => {
     const id = Number(req.params.id)
     const videoIndex = videos.findIndex(v => v.id === id)
 
