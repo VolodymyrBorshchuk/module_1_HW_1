@@ -3,7 +3,7 @@ import express from 'express';
 import { setupApp } from '../../../src/setup-app';
 import { DriverInput } from '../../../src/drivers/dto/driver.input';
 import { HttpStatus } from '../../../src/core/types/http-statuses';
-import { Driver, VehicleFeature } from '../../../src/drivers/types/driver';
+import { Driver, VehicleFeature } from '../../../src/drivers/types/videos';
 import { ResourceType } from '../../../src/core/types/resource-type';
 import { DriverUpdateInput } from '../../../src/drivers/dto/driver-update.input';
 import { DriverOutput } from '../../../src/drivers/dto/driver.output';

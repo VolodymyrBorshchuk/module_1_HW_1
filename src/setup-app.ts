@@ -1,5 +1,5 @@
 import express, { Express, Request, Response } from 'express';
-import { videosRouter } from './drivers/routers/drivers.router';
+import { videosRouter } from './drivers/routers/videos.router';
 import { testingRouter } from './testing/routers/testing.router';
 import { setupSwagger } from './core/swagger/setup-swagger';
 
@@ -10,8 +10,8 @@ export const setupApp = (app: Express) => {
     res.status(200).send('hello world!!!');
   });
 
-  app.use('/api/drivers', videosRouter);
-  app.use('/api/testing', testingRouter);
+  app.use('/hometask_01/api/videos', videosRouter);
+  app.use('/hometask_01/api/testing', testingRouter);
 
   setupSwagger(app);
   return app;

@@ -2,7 +2,7 @@ import request from 'supertest';
 import { setupApp } from '../../../src/setup-app';
 import express from 'express';
 import { DriverInput } from '../../../src/drivers/dto/driver.input';
-import { VehicleFeature } from '../../../src/drivers/types/driver';
+import { VehicleFeature } from '../../../src/drivers/types/videos';
 import { HttpStatus } from '../../../src/core/types/http-statuses';
 import { ResourceType } from '../../../src/core/types/resource-type';
 
