@@ -2,116 +2,92 @@ import { Request, Response, Router } from 'express';
 import { db } from '../../db/in-memory.db';
 import { HttpStatus } from '../../core/types/http-statuses';
 import { createErrorMessages } from '../../core/utils/error.utils';
+import { Video } from "../../types/video";
 
 export const videosRouter = Router({});
 
 videosRouter
-    .get('/', (req: Request, res: Response) => {
-        res.status(200).send(db.videos);
-    })
+.get('/', (req: Request, res: Response) => {
+    res.status(200).send(db.videos);
+})
 
-    .get('/:id', (req: Request, res: Response) => {
-        const id = +req.params.id; // або parseInt(req.params.id)
-        const video = db.videos.find(v => v.id === id);
+// GET /videos/:id — повертає відео по ID
+.get('/:id', (req: Request, res: Response) => {
+    const id = parseInt(req.params.id);
+    const video = db.videos.find((v) => v.id === id);
 
-        if (!video) {
-            // стандартна структура помилки для тестів
-            return res.status(404).send({
-                errorsMessages: [
-                    { message: 'Video not found', field: 'id' }
-                ]
-            });
-        }
-
-        res.status(200).send(video);
-    })
-
-    .post('/', (req, res) => {
-    const { title, author, availableResolutions } = req.body;
-    if (
-        !title ||
-        typeof title !== 'string' ||
-        !author ||
-        typeof author !== 'string' ||
-        !Array.isArray(availableResolutions)
-    ) {
-        return res.status(400).json({
-            errorsMessages: [
-                { message: 'Invalid input data', field: 'title/author/availableResolutions' },
-            ],
-        });
+    if (!video) {
+        return res.status(404).send({ error: { code: 404, message: "The page could not be found" } });
     }
 
-    const newVideo = {
-        id: Date.now(),
+    res.status(200).send(video);
+})
+
+// POST /videos — створює нове відео
+.post('/', (req: Request, res: Response) => {
+    const { title, author, availableResolutions } = req.body;
+
+    const errors = [];
+    if (!title) errors.push({ message: "Title is required", field: "title" });
+    if (!author) errors.push({ message: "Author is required", field: "author" });
+
+    if (errors.length > 0) {
+        return res.status(400).send({ errorsMessages: errors });
+    }
+
+    const newVideo: Video = {
+        id: db.videos.length + 1,
         title,
         author,
-        canBeDownloaded: true,
+        canBeDownloaded: false,
         minAgeRestriction: null,
         createdAt: new Date().toISOString(),
         publicationDate: new Date().toISOString(),
-        availableResolutions,
+        availableResolutions: availableResolutions || [],
     };
 
     db.videos.push(newVideo);
-    res.status(201).json(newVideo);
+    res.status(201).send(newVideo);
 })
 
-    .put('/:id', (req: Request, res: Response) => {
-        const id = +req.params.id;
-        const video = db.videos.find(v => v.id === id);
+// PUT /videos/:id — оновлює відео по ID
+.put('/:id', (req: Request, res: Response) => {
+    const id = parseInt(req.params.id);
+    const videoIndex = db.videos.findIndex((v) => v.id === id);
 
-        // Якщо відео не знайдено
-        if (!video) {
-            return res.status(404).send({
-                errorsMessages: [{ message: 'Video not found', field: 'id' }]
-            });
-        }
+    if (videoIndex === -1) {
+        return res.status(404).send({ error: { code: 404, message: "The page could not be found" } });
+    }
 
-        const { title, author, availableResolutions } = req.body;
+    const { title, author, availableResolutions } = req.body;
+    const errors = [];
+    if (!title) errors.push({ message: "Title is required", field: "title" });
+    if (!author) errors.push({ message: "Author is required", field: "author" });
 
-        // Валідація
-        const errors: { message: string; field: string }[] = [];
+    if (errors.length > 0) {
+        return res.status(400).send({ errorsMessages: errors });
+    }
 
-        if (!title || typeof title !== 'string' || title.trim().length === 0)
-            errors.push({ message: 'Invalid title', field: 'title' });
+    const video = db.videos[videoIndex];
+    video.title = title;
+    video.author = author;
+    video.availableResolutions = availableResolutions || [];
 
-        if (!author || typeof author !== 'string' || author.trim().length === 0)
-            errors.push({ message: 'Invalid author', field: 'author' });
+    res.sendStatus(204);
+})
 
-        if (
-            !Array.isArray(availableResolutions) ||
-            !availableResolutions.every(r =>
-                ['P144', 'P240', 'P360', 'P480', 'P720', 'P1080', 'P1440', 'P2160'].includes(r)
-            )
-        )
-            errors.push({ message: 'Invalid availableResolutions', field: 'availableResolutions' });
+// DELETE /videos/:id — видаляє відео по ID
+.delete('/:id', (req: Request, res: Response) => {
+    const id = parseInt(req.params.id);
+    const videoIndex = db.videos.findIndex((v) => v.id === id);
 
-        if (errors.length > 0) {
-            return res.status(400).send({ errorsMessages: errors });
-        }
+    if (videoIndex === -1) {
+        return res.status(404).send({ error: { code: 404, message: "The page could not be found" } });
+    }
 
-        // Якщо все ок — оновлюємо
-        video.title = title;
-        video.author = author;
-        video.availableResolutions = availableResolutions;
-
-        return res.sendStatus(204); // успішне оновлення без тіла
-    })
-
-    .delete('/:id', (req: Request, res: Response) => {
-        const id = +req.params.id;
-        const index = db.videos.findIndex(v => v.id === id);
-
-        if (index === -1) {
-            return res.status(404).send({
-                errorsMessages: [{ message: 'Video not found', field: 'id' }]
-            });
-        }
-
-        db.videos.splice(index, 1);
-        return res.sendStatus(204); // Успішне видалення
-    })
+    db.videos.splice(videoIndex, 1);
+    res.sendStatus(204);
+})
 
 
 // .get('/:id', (req: Request, res: Response) => {
