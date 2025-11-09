@@ -14,12 +14,12 @@ import { DriverCreateInput } from '../dto/driver-create.input';
 export const driversRouter = Router({});
 
 driversRouter
-  .get('', (req: Request, res: Response<DriverListOutput>) => {
+  .get('/videos', (req: Request, res: Response<DriverListOutput>) => {
     const drivers = mapToDriverListOutput(db.drivers);
     res.status(200).send(drivers);
   })
 
-  .get('/:id', (req: Request, res: Response) => {
+  .get('/videos/:id', (req: Request, res: Response) => {
     const id = parseInt(req.params.id);
     const driver = db.drivers.find((d) => d.id === id);
 
@@ -34,7 +34,7 @@ driversRouter
     res.status(200).send(mapToDriverOutput(driver));
   })
 
-  .post('', (req: Request<{}, {}, DriverCreateInput>, res: Response) => {
+  .post('/videos', (req: Request<{}, {}, DriverCreateInput>, res: Response) => {
     const errors = vehicleInputDtoValidation(req.body.data);
 
     if (errors.length > 0) {
@@ -61,7 +61,7 @@ driversRouter
   })
 
   .put(
-    '/:id',
+    '/videos/:id',
     (req: Request<{ id: string }, {}, DriverUpdateInput>, res: Response) => {
       console.log('in put: ', req.body.data);
       const id = parseInt(req.params.id);
@@ -101,7 +101,7 @@ driversRouter
     },
   )
 
-  .delete('/:id', (req: Request, res: Response) => {
+  .delete('videos/:id', (req: Request, res: Response) => {
     const id = parseInt(req.params.id);
 
     //ищет первый элемент, у которого функция внутри возвращает true и возвращает индекс этого элемента в массиве, если id ни у кого не совпал, то findIndex вернёт -1.
